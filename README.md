@@ -27,3 +27,26 @@ Not applicable.
 * Frontend: We plan to write the frontend using the VueJS framework.
 * Hosting: We plan to host the application in AWS.
 
+### VueJS Information
+### Project setup
+```
+npm install
+```
+
+#### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+#### Compiles and minifies for production
+```
+npm run build
+```
+
+#### Lints and fixes files
+```
+npm run lint
+```
+
+#### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
