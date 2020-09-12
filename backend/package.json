@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "dev-start": "nodemon app.js",
-    "migrate-db": "node-pg-migrate"
+    "migrate-db": "node-pg-migrate",
+    "migrate-db-up": "node-pg-migrate up"
   },
   "author": "N. Carson Franklin",
   "license": "ISC",
