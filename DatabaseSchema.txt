@@ -1,0 +1,39 @@
+SCHEMA:
+  Tables:
+    users (id, username, password)
+      * Primary Key - id
+    
+    todos (id, description, todo_state_id, date_due, owner_username)
+      * Primary Key - id
+      * Foreign Key - todo_state_id references todo_states
+      * Foreign Key - owner_username references users
+    
+    todo_states (id, name, owner_username)
+      * Primary Key - id
+      * Foreign Key owner_username references users
+  
+  Descriptions:
+    users:
+      The users table represents the User entity will hold the user's information so they are able to sign up and login.
+      Despite having a unique id, we decided that the username will also be unique. Though that will be enforced
+      in the code and not in the database. Each user will also have a password that they set.
+
+    todos:
+      The todos table represents the Todo List Item entity and will hold all the details for each todo list item that
+      the users will have. Each item will have a foreign key to a todo_state since we want to give users the ability
+      to have multiple states for their items. Including the functionality of adding their own custom state. Each item
+      will also have a foreign key to a username so we can map specific items as belonging to specific users. Each item
+      will have a description of the task to be completed, entered by the user, and a date that task is due, also
+      determined by the user.
+
+    todo_states:
+      The todo_states table represents the different state entities that the todo list items can be in. Each state will
+      have an id that acts as an enumerated value so that each one will be unique and easily generated. Each state will
+      also have a name giving a description of what it means (ex. in progress). Since we are allowing users to create
+      their own custom states, we only want those custom states that are associated with that user to be available to
+      that user. To acheive this, a foreign key that references the username of the user that created the state is included.
+  
+  Normalization:
+    We ensure normalization by extracting the state of each item to its own table. We could have easily made the state of
+    an item a string in each item. This makes it so the info needed for each state is easily accessible by any and all items
+    created by that user.
