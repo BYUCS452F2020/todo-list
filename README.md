@@ -4,7 +4,7 @@ the entities we will create include: users, todo_items, and todo_item_states. A 
 create todo items, and move those items into various states.
 
 ## Team
-Looking for one other person to work on this project with me.
+Carson Franklin and Logan McBride
 
 ## SQL
 PostgreSQL
