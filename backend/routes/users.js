@@ -43,25 +43,14 @@ router.post('/', async (req, res) => {
 
 
 router.get('/', authMW, async (req, res) => {
-  const username = req.user.username;
+  const user = req.user;
 
-  if (!username) {
-    return res.status(400)
-      .send({
-        message: "Username is required."
-      });
+  if (!user) {
+    console.log("There was an error getting the user. The user wasn't in the req obj. We expected it to be there because the authMW function is in the call stack.");
+    return res.sendStatus(500)
   }
 
-  try {
-    const user = await users.readUser(username);
-    delete user.password;
-    return res.send({
-      user: user
-    });
-  } catch (e) {
-    console.log(e);
-    return res.sendStatus(500);
-  }
+  return res.send(user);
 });
 
 router.post('/login', async (req, res) => {
