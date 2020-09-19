@@ -29,8 +29,13 @@ async function readUser(username) {
   return res.rows[0];
 }
 
-async function comparePassword(password) {
-
+async function comparePassword(password1, password2) {
+  try {
+    return await argon2.verify(password1, password2)
+  } catch (e) {
+    console.log(e);
+    return false
+  }
 }
 
 module.exports = {

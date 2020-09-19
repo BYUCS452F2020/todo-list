@@ -16,7 +16,7 @@ async function closeSQLConnection(commit) {
 }
 
 async function beginSQLTransaction() {
-  sqlClient.query('BEGIN');
+  await sqlClient.query('BEGIN');
 }
 
 module.exports = {

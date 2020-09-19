@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const users = require("../data/users.js");
 const dbs = require('../dbs');
+import { authMW } from "../middleware";
 
 router.post('/', async (req, res) => {
   // Validate
@@ -41,8 +42,8 @@ router.post('/', async (req, res) => {
 });
 
 
-router.get('/', async (req, res) => {
-  const username = req.username;
+router.get('/', authMW, async (req, res) => {
+  const username = req.user.username;
 
   if (!username) {
     return res.status(400)
@@ -84,7 +85,7 @@ router.post('/login', async (req, res) => {
         })
     }
 
-    const isValidPassword = await users.comparePassword(password, user.password)
+    const isValidPassword = await users.comparePassword(password, user.password);
 
     if (!isValidPassword) {
       return res.status(401)
