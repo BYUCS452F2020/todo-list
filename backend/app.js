@@ -4,6 +4,8 @@ const cookieParser = require("cookie-parser");
 const cookieSession = require('cookie-session');
 
 const userRoutes = require("./routes/users.js");
+const todosRoutes = require("./routes/todos");
+const todoStatesRoutes = require("./routes/todoStates");
 
 const port = 3000;
 
@@ -30,6 +32,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', userRoutes.routes);
+app.use('/todos', todosRoutes.routes);
+app.use('/todo-states', todoStatesRoutes.routes);
 
 
 app.listen(port, () => {

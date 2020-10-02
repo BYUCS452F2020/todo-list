@@ -7,6 +7,18 @@ async function createTodoState(name, ownerUsername) {
   await sqlClient.query(sql, [name, ownerUsername]);
 }
 
+async function readTodoStates(ownerUsername) {
+  const sql = `SELECT * FROM todos
+                    WHERE owner_username = $1`;
+  await sqlClient.query(sql, [ownerUsername]);
+}
+
+async function readTodoStateById(id) {
+  const sql = `SELECT * FROM todos
+                    WHERE id = $1`;
+  await sqlClient.query(sql, [id]);
+}
+
 async function deleteTodoState(id) {
   //TODO: Is it here that we want to check if they have any items that currently are in this state?
   const sql = `DELETE FROM todo_states
@@ -16,5 +28,7 @@ async function deleteTodoState(id) {
 
 module.exports = {
   createTodoState,
+  readTodoStates,
+  readTodoStateById,
   deleteTodoState
 };

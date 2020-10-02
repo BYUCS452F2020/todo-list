@@ -1,7 +1,7 @@
 <template>
   <div style="padding: 40px">
     <div>
-
+      <!--TODO: refactor this dialog into its own component-->
       <v-btn style="margin: 10px" depressed color="primary" @click="editStates">Edit States</v-btn>
 
       <v-dialog v-model="addItemDialog" persistent max-width="600px">
