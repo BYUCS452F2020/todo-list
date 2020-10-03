@@ -8,13 +8,8 @@ async function hashPassword(password) {
 async function createUser(username, password) {
   const sql = "INSERT INTO users (username, password) VALUES ($1, $2)";
   password = await hashPassword(password);
-  await sqlClient.query(sql, [username, password], (err) => {
-    if (err) {
-      throw err
-    } else {
-      return `Successfully created the user with the username of ${username}.`
-    }
-  })
+  await sqlClient.query(sql, [username, password]);
+  return await readUser(username);
 }
 
 async function readUser(username) {

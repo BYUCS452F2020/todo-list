@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const todoStates = require("../data/todoStates");
 const dbs = require("../dbs");
-import { authMW } from "../middleware";
+const authMW = require("../middleware").authMW;
 
 router.post('/', authMW, async (req, res) => {
     let commit = false;

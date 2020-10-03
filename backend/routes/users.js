@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const users = require("../data/users.js");
 const dbs = require('../dbs');
-import { authMW } from "../middleware";
+const authMW = require("../middleware").authMW;
 
 router.post('/', async (req, res) => {
   // Validate
@@ -30,8 +30,9 @@ router.post('/', async (req, res) => {
 
     commit = true;
 
+    delete user.password;
     return res.send({
-      message: user
+      user
     });
   } catch (e) {
     console.log(e);

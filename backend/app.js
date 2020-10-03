@@ -6,6 +6,7 @@ const cookieSession = require('cookie-session');
 const userRoutes = require("./routes/users.js");
 const todosRoutes = require("./routes/todos");
 const todoStatesRoutes = require("./routes/todoStates");
+const cors = require('cors');
 
 const port = 3000;
 
@@ -26,6 +27,7 @@ app.use(cookieSession({
   }
 }));
 
+app.use(cors({ credentials: true, origin: true }));
 
 app.get('/', (req, res) => {
   res.send('Welcome to the todo-list API!')
@@ -34,7 +36,6 @@ app.get('/', (req, res) => {
 app.use('/user', userRoutes.routes);
 app.use('/todos', todosRoutes.routes);
 app.use('/todo-states', todoStatesRoutes.routes);
-
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)

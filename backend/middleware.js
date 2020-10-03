@@ -1,4 +1,4 @@
-import { readUser } from './data/users'
+const readUser = require('./data/users');
 
 const authMW = async (req, res, next) => {
   if (!req.session || !req.session.username)
@@ -23,6 +23,6 @@ const authMW = async (req, res, next) => {
   return next();
 };
 
-export {
+module.exports = {
   authMW
-}
+};
