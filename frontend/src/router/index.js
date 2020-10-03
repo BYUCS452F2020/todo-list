@@ -16,7 +16,7 @@ Vue.use(VueRouter);
   {
     path: '/login',
     name: 'Login',
-    component: List
+    component: List //TODO: replace this with the actual Login component.
   },
   {
     path: '/signup',
