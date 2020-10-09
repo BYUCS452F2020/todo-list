@@ -49,4 +49,4 @@ new Vue({
   created: function () {
     this.$on('logged-in', this.handleLoggedIn);
   }
-}).$mount('#app')
+}).$mount('#app');

@@ -67,13 +67,23 @@
       password: ''
     }),
     methods: {
-      signup: function () {
+      signup: async function () {
         if (!this.username || !this.password) {
           alert('Sorry, but a username and password are required to sign up. Please fill both out then try again.');
           return;
         }
 
-        alert('signed up')
+
+        try {
+          await this.$axios.post('/user',{
+            username: this.username,
+            password: this.password
+          });
+
+          await this.$router.push('/')
+        } catch (e) {
+          alert('Failed to signup, please try again.');
+        }
       }
     }
   }

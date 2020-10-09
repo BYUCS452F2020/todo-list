@@ -76,7 +76,18 @@
           return;
         }
 
-        alert('Login button clicked');
+        try {
+          this.$axios.post('/user', {
+            username: this.username,
+            password: this.password
+          })
+        } catch (e) {
+          if (e.status === 401){
+            alert("Error incorrect username password combination");
+          } else {
+            alert("Internal error, please try again.");
+          }
+        }
       }
     }
   }
