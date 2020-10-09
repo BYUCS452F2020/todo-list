@@ -70,19 +70,21 @@
       password: ''
     }),
     methods: {
-      login: function () {
+      login: async function () {
         if (!this.username || !this.password) {
           alert('Sorry, but a username and password are required to login. Please fill both out then try again.');
           return;
         }
 
         try {
-          this.$axios.post('/user', {
+          await this.$axios.post('/user/login', {
             username: this.username,
             password: this.password
-          })
+          });
+
+          await this.$router.push('/')
         } catch (e) {
-          if (e.status === 401){
+          if (e.response.status === 401){
             alert("Error incorrect username password combination");
           } else {
             alert("Internal error, please try again.");

@@ -11,6 +11,10 @@
 
       <v-spacer></v-spacer>
 
+      <v-btn v-if="isAuthenticated" color="red" rounded>
+        Logout
+      </v-btn>
+
       <v-btn
         href="https://github.com/BYUCS452F2020/todo-list"
         target="_blank"
@@ -38,5 +42,10 @@ export default {
   data: () => ({
     //
   }),
+  computed: {
+    isAuthenticated() {
+      return this.$root.isAuthenticated
+    }
+  }
 };
 </script>

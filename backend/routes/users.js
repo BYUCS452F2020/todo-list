@@ -66,7 +66,7 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    const user = users.readUser(username);
+    const user = await users.readUser(username);
 
     if (!user) {
       return res.status(400)
@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
         })
     }
 
-    const isValidPassword = await users.comparePassword(password, user.password);
+    const isValidPassword = await users.comparePassword(user.password, password);
 
     if (!isValidPassword) {
       return res.status(401)
