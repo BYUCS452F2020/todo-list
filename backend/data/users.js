@@ -24,9 +24,9 @@ async function readUser(username) {
   return res.rows[0];
 }
 
-async function comparePassword(password1, password2) {
+async function comparePassword(argonHash, plainText) {
   try {
-    return await argon2.verify(password1, password2)
+    return await argon2.verify(argonHash, plainText)
   } catch (e) {
     console.log(e);
     return false

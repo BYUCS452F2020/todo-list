@@ -11,6 +11,14 @@
 
       <v-spacer></v-spacer>
 
+      <v-btn v-if="this.$root.isAuthenticated"
+             @click="logout"
+             color="red"
+             elevation="0"
+             rounded>
+        Logout
+      </v-btn>
+
       <v-btn
         href="https://github.com/BYUCS452F2020/todo-list"
         target="_blank"
@@ -38,5 +46,11 @@ export default {
   data: () => ({
     //
   }),
+  methods: {
+    logout: async function () {
+      await this.$root.handleLoggedOut();
+      await this.$router.push("/login");
+    }
+  }
 };
 </script>
