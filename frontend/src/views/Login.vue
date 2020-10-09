@@ -77,11 +77,11 @@
         }
 
         try {
-          await this.$axios.post('/user/login', {
+          let res = await this.$axios.post('/user/login', {
             username: this.username,
             password: this.password
           });
-
+          this.$root.user = res.data.user;
           await this.$router.push('/')
         } catch (e) {
           if (e.response.status === 401){

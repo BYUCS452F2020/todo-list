@@ -11,7 +11,11 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn v-if="isAuthenticated" color="red" rounded>
+      <v-btn v-if="this.$root.isAuthenticated"
+             @click="logout"
+             color="red"
+             elevation="0"
+             rounded>
         Logout
       </v-btn>
 
@@ -42,9 +46,10 @@ export default {
   data: () => ({
     //
   }),
-  computed: {
-    isAuthenticated() {
-      return this.$root.isAuthenticated
+  methods: {
+    logout: async function () {
+      await this.$root.handleLoggedOut();
+      await this.$router.push("/login");
     }
   }
 };
