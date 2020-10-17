@@ -39,7 +39,8 @@
 <script>
 export default {
   name: "EditItemDialog",
-  props: ['editItemDialogVisible', 'todoItems', 'stateItems', 'setVisibility', 'item', 'update'],
+  // props: ['editItemDialogVisible', 'todoItems', 'stateItems', 'setVisibility', 'item', 'update'],
+  props: ['editItemDialogVisible', 'todoItems', 'stateItems', 'setVisibility', 'item'],
   data: () => ({
     updatedItem: {
       id: this.item.id,
@@ -52,7 +53,8 @@ export default {
   methods: {
     updateItem() {
       this.setVisibility(false);
-      this.update(this.updatedItem);
+      // this.update(this.updatedItem);
+      this.$emit('update', this.updatedItem);
     },
     cancelUpdate() {
       this.setVisibility(false);

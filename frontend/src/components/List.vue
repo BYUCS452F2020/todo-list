@@ -24,6 +24,7 @@
           :set-visibility="setNewItemVisibility"
       />
       <EditItemDialog
+          v-on:updated="updateItem"
           :edit-item-dialog-visible="editItemDialogVisible"
           :todo-items="todoItems"
           :state-items="currentStates"
@@ -174,6 +175,9 @@ export default {
     },
     fillCurrentStates() {
       this.currentStates = [];
+      // this.$root.user // most likely
+      // this.$router.user
+      // this.$root.data.user
       /*this.stateItems.forEach((item) => {
         this.currentStates[item.id] = item.name;
       });*/
