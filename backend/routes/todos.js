@@ -27,10 +27,10 @@ router.get('/', authMW, async (req, res) => {
     try {
         await dbs.beginSQLTransaction();
 
-        let result = await todos.readTodoItems(req.ownerUsername);
+        let result = await todos.readTodoItems(req.user.username);
         commit = true;
         return res.send({
-            message: result
+            todos: result
         })
     } catch (e) {
         console.log(e);

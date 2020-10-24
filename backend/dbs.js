@@ -11,8 +11,6 @@ async function closeSQLConnection(commit) {
   } else {
     await sqlClient.query('ROLLBACK')
   }
-
-  sqlClient.release();
 }
 
 async function beginSQLTransaction() {

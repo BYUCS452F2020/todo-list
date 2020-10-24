@@ -2,26 +2,19 @@
   <div style="padding: 40px">
     <div>
       <!--TODO: refactor this dialog into its own component-->
-      <v-btn style="margin: 10px"
-             depressed
-             color="primary"
-             @click="editStates"
-      >Edit States</v-btn>
-      <EditStatesDialog
+<!--      <v-btn style="margin: 10px"-->
+<!--             depressed-->
+<!--             color="primary"-->
+<!--             @click="editStates"-->
+<!--      >Edit States</v-btn>-->
+      <!--<EditStatesDialog
           :edit-states-dialog-visible="editStatesDialogVisible"
           :state-items="currentStates"
           :set-dialog-visibility="setEditStatesVisibility"
-      />
-      <v-btn style="margin: 10px; float: right"
-             depressed
-             color="primary"
-             @click="addTodoItem"
-      >Add Item Todo</v-btn>
+      />-->
       <NewItemDialog
-          :new-item-dialog-visible="newItemDialogVisible"
-          :todo-items="todoItems"
-          :state-items="currentStates"
-          :set-visibility="setNewItemVisibility"
+          :state-options="currentStates"
+          @todoCreated="todoCreated"
       />
       <EditItemDialog
           v-on:updated="updateItem"
@@ -42,9 +35,9 @@
         <v-list-item v-for="(item, idx) in todoItems" :key="idx">
           <template>
             <v-list-item-action @click="editStateItem(item)">
+              <!--TODO: I would rename currentStates to usersTodoStates-->
               <v-select :items="currentStates"
-                        :value="currentStates[item.todoStateId]"
-                        label="State"
+                        :label="item.state.name"
                         @change="handleChange($event, item)"
                         style="max-width: 150px"
               />
@@ -63,96 +56,27 @@
 <script>
 import NewItemDialog from "@/components/NewItemDialog";
 import EditItemDialog from "@/components/EditItemDialog";
-import EditStatesDialog from "@/components/EditStatesDialog";
 
 export default {
   name: "List",
-  components: {EditStatesDialog, EditItemDialog, NewItemDialog},
+  components: {EditItemDialog, NewItemDialog},
   data: () => ({
     editStatesDialogVisible: false,
     newItemDialogVisible: false,
     editItemDialogVisible: false,
     itemToEdit: {},
     currentStates: [],
-    // This is dummy data for UI testing TODO: Remove the dummy data and use api to populate todoItems
-    //Probably will use moment for timeDue
-    todoItems: [
-      {
-        id: 1,
-        description: "Tell Carson he is a total git",
-        todoStateId: 3,
-        dateDue: "9/13/20",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 2,
-        description: "Crush Carson at some game",
-        todoStateId: 0,
-        dateDue: "9/17/20",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 3,
-        description: "Each lunch with Megan",
-        todoStateId: 0,
-        dateDue: "9/18/20",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 4,
-        description: "Finish building Todo-List project",
-        todoStateId: 2,
-        dateDue: "9/30/20",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 5,
-        description: "Talk to Mimi about what it's like being married to a git like Carson",
-        todoStateId: 0,
-        dateDue: "10/10/20",
-        ownerUsername: "logiBear"
-      }
-    ],
-    stateItems: [
-      {
-        id: 0,
-        name: "new",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 1,
-        name: "complete",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 2,
-        name: "in progress",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 3,
-        name: "past due",
-        ownerUsername: "logiBear"
-      },
-    ]
+    todoItems: [],
   }),
-  mounted() {
+  created() {
     this.fillCurrentStates();
+    this.getItemsFromUser();
   },
   methods: {
-    setNewItemVisibility(show) {
-      this.newItemDialogVisible = show;
-    },
-    setEditItemVisibility(show) {
-      this.editItemDialogVisible = show;
-    },
-    setEditStatesVisibility(show) {
-      this.editStatesDialogVisible = show;
+    todoCreated: function(item) {
+      this.todoItems.push(item);
     },
     handleChange(value, item) {
-      console.log("val : " + value);
-      console.log(item);
-      console.log(this.stateItems.filter(item => {return item.name === value})[0].id);
       item.todoStateId = this.stateItems.filter(item => {return item.name === value})[0].id;
     },
     editStates() {
@@ -174,18 +98,19 @@ export default {
       console.log(item);
     },
     fillCurrentStates() {
-      this.currentStates = [];
-      // this.$root.user // most likely
-      // this.$router.user
-      // this.$root.data.user
-      /*this.stateItems.forEach((item) => {
-        this.currentStates[item.id] = item.name;
-      });*/
       try {
         this.currentStates = this.$axios.get("/todo-states/", {
-          ownerUsername: "logiBear" //TODO: Actually get the current user's username
+          ownerUsername: this.$root.user
         });
       } catch (e) {
+        console.log(e);
+      }
+    },
+    async getItemsFromUser() {
+      try {
+        let res = await this.$axios.get("/todos");
+        this.todoItems = res.data.todos;
+      } catch(e) {
         console.log(e);
       }
     }

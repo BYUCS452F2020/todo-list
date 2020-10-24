@@ -1,4 +1,4 @@
-const readUser = require('./data/users');
+const { readUser } = require('./data/users');
 
 const authMW = async (req, res, next) => {
   if (!req.session || !req.session.username)

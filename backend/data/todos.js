@@ -8,9 +8,26 @@ async function createTodoItem(description, todoStateId, dateDue, ownerUsername) 
 }
 
 async function readTodoItems(ownerUsername) {
-    const sql = `SELECT * FROM todos
-                    WHERE owner_username = $1`;
-    await sqlClient.query(sql, [ownerUsername]);
+    const sql = `SELECT todos.id, 
+                        description, 
+                        date_due, 
+                        todo_states.id AS todo_state_id,
+                        todo_states.name AS todo_state_name
+                    FROM todos, todo_states
+                    WHERE todos.todo_state_id = todo_states.id
+                    AND todos.owner_username = $1`;
+    const { rows } = await sqlClient.query(sql, [ownerUsername]);
+    let res = [];
+    for (const row of rows) res.push({
+        id: row.id,
+        description: row.description,
+        dateDue: row.date_due,
+        state: {
+            id: row.todo_state_id,
+            name: row.todo_state_name
+        }
+    });
+    return res;
 }
 
 async function readTodoItemById(id) {

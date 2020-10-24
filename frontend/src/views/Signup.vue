@@ -78,7 +78,7 @@
           let res = await this.$axios.post('/user',{
             username: this.username,
             password: this.password
-          }).data.user;
+          });
 
           this.$root.user = res.data.user;
           await this.$router.push('/')
