@@ -9,11 +9,10 @@ router.post('/', authMW, async (req, res) => {
     try {
         await dbs.beginSQLTransaction();
 
-        let result = await todos.createTodoItem(req.description, req.todoStateId, req.dueDate, req.ownerUsername);
+        let result = await todos.createTodoItem(req.body.description, req.body.state.id, req.body.dateDue,
+          req.user.username);
         commit = true;
-        return res.send({
-            message: result
-        })
+        return res.send(result)
     } catch (e) {
         console.log(e);
         return res.sendStatus(500)

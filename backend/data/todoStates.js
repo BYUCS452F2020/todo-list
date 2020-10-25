@@ -8,10 +8,11 @@ async function createTodoState(name, ownerUsername) {
 }
 
 async function readTodoStates(ownerUsername) {
-  const sql = `SELECT * FROM todos
+  const sql = `SELECT * FROM todo_states
                     WHERE owner_username = $1
                         OR owner_username IS NULL`;
-  await sqlClient.query(sql, [ownerUsername]);
+  const { rows } = await sqlClient.query(sql, [ownerUsername]);
+  return rows
 }
 
 async function readTodoStateById(id) {

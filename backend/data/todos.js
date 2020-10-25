@@ -3,8 +3,14 @@ const { sqlClient } = require('../dbs.js');
 async function createTodoItem(description, todoStateId, dateDue, ownerUsername) {
     const sql = `INSERT INTO todos
                 (description, todo_state_id, date_due, owner_username)
-                VALUES ($1, $2, $3, $4)`;
-    await sqlClient.query(sql, [description, todoStateId, dateDue, ownerUsername]);
+                VALUES ($1, $2, $3, $4) RETURNING *`;
+    const { rows } =  await sqlClient.query(sql, [
+        description,
+        todoStateId,
+        dateDue,
+        ownerUsername
+    ]);
+    return rows[0];
 }
 
 async function readTodoItems(ownerUsername) {
