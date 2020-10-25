@@ -2,193 +2,135 @@
   <div style="padding: 40px">
     <div>
       <!--TODO: refactor this dialog into its own component-->
-      <v-btn style="margin: 10px" depressed color="primary" @click="editStates">Edit States</v-btn>
+<!--      <v-btn style="margin: 10px"-->
+<!--             depressed-->
+<!--             color="primary"-->
+<!--             @click="editStates"-->
+<!--      >Edit States</v-btn>-->
+      <!--<EditStatesDialog
+          :edit-states-dialog-visible="editStatesDialogVisible"
+          :state-items="currentStates"
+          :set-dialog-visibility="setEditStatesVisibility"
+      />-->
 
-      <v-dialog v-model="addItemDialog" persistent max-width="600px">
-        <template v-slot:activator="{on, newItem}">
-          <v-btn style="margin: 10px; float: right"
-                 depressed
-                 color="primary"
-                 v-on="on"
-                 v-bind="newItem"
-          >Add Item Todo</v-btn>
-        </template>
-        <v-card>
-          <v-card-title>
-            Create A New Item
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-text-field label="Description"
-                              placeholder="What do you want to do?"
-                              @change="newItem.description = $event"/>
-              </v-row>
-              <v-row>
-                <v-select :items="stateItems"
-                          label="State"
-                          @change="newItem.todoStateId = stateItems[$event].id"
-                          style="max-width: 150px"
-                />
-              </v-row>
-              <v-row>
-                <v-date-picker title="Date Due"
-                               @change="newItem.dateDue = $event"
-                               v-bind:value="newItem.dateDue"
-                />
-              </v-row>
-            </v-container>
-            <v-card-actions>
-              <v-btn color="primary" depressed @click="cancelItem">Cancel</v-btn>
-              <v-btn color="primary" depressed @click="addItem">Add Item</v-btn>
-            </v-card-actions>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
+<!--      <EditItemDialog-->
+<!--          v-on:updated="updateItem"-->
+<!--          :edit-item-dialog-visible="editItemDialogVisible"-->
+<!--          :todo-items="todoItems"-->
+<!--          :state-items="currentStates"-->
+<!--          :set-visibility="setEditItemVisibility"-->
+<!--          :item="itemToEdit"-->
+<!--          :update="updateItem"-->
+<!--          />-->
 
     </div>
-    <v-list
-        subheader
-        flat
-    >
-      <v-list-item-group multiple>
-        <v-list-item v-for="(item, idx) in todoItems" :key="idx">
-          <template>
-            <v-list-item-action @click="editItem(item)">
-              <v-select :items="currentStates"
-                        :value="currentStates[item.todoStateId]"
-                        label="State"
-                        @change="handleChange($event, item)"
-                        style="max-width: 150px"
-              />
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.description"></v-list-item-title>
-              <v-list-item-subtitle>{{item.dateDue}}</v-list-item-subtitle>
-            </v-list-item-content>
-          </template>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
+    <v-card elevation="5">
+      <v-row class="text-center">
+        <v-col>
+
+        </v-col>
+        <v-col>
+          <span class="display-3">Todo's</span>
+        </v-col>
+        <v-col>
+          <NewItemDialog
+              :state-options="currentStates"
+              @todoCreated="todoCreated"
+              class="mt-3"
+          />
+        </v-col>
+      </v-row>
+      <hr class="mr-12 ml-12"/>
+      <v-row justify="center">
+        <v-list
+            subheader
+            flat
+        >
+          <v-list-item-group multiple>
+            <v-list-item v-for="(item, idx) in todoItems" :key="idx">
+              <template>
+                <v-list-item-action @click="editStateItem(item)">
+                  <!--TODO: I would rename currentStates to usersTodoStates-->
+                  <v-select :items="currentStates"
+                            :label="item.state.name"
+                            return-object
+                            item-text="name"
+                            @change="handleChange($event, item)"
+                            style="max-width: 150px"
+                  />
+                </v-list-item-action>
+                <v-list-item-content @click="editTodoItem(item)">
+                  <v-list-item-title v-text="item.description"></v-list-item-title>
+                  <v-list-item-subtitle>{{item.dateDue}}</v-list-item-subtitle>
+                </v-list-item-content>
+              </template>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-row>
+    </v-card>
   </div>
 </template>
 
 <script>
+import NewItemDialog from "@/components/NewItemDialog";
+// import EditItemDialog from "@/components/EditItemDialog";
+
 export default {
   name: "List",
+  components: {NewItemDialog},
   data: () => ({
-    addItemDialog: false,
-    editStatesDialog: false,
-    newItem: {
-      id: -1,
-      description: "",
-      todoStateId: 0,
-      dateDue: "",
-      ownerUsername: "",
-    },
+    editStatesDialogVisible: false,
+    newItemDialogVisible: false,
+    editItemDialogVisible: false,
+    itemToEdit: {},
     currentStates: [],
-    // This is dummy data for UI testing TODO: Remove the dummy data and use api to populate todoItems
-    //Probably will use moment for timeDue
-    todoItems: [
-      {
-        id: 1,
-        description: "Tell Carson he is a total git",
-        todoStateId: 3,
-        dateDue: "9/13/20",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 2,
-        description: "Crush Carson at some game",
-        todoStateId: 0,
-        dateDue: "9/17/20",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 3,
-        description: "Each lunch with Megan",
-        todoStateId: 0,
-        dateDue: "9/18/20",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 4,
-        description: "Finish building Todo-List project",
-        todoStateId: 2,
-        dateDue: "9/30/20",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 5,
-        description: "Talk to Mimi about what it's like being married to a git like Carson",
-        todoStateId: 0,
-        dateDue: "10/10/20",
-        ownerUsername: "logiBear"
-      }
-    ],
-    stateItems: [
-      {
-        id: 0,
-        name: "new",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 1,
-        name: "complete",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 2,
-        name: "in progress",
-        ownerUsername: "logiBear"
-      },
-      {
-        id: 3,
-        name: "past due",
-        ownerUsername: "logiBear"
-      },
-    ]
+    todoItems: [],
   }),
-  mounted() {
-    this.fillCurrentStates();
+  created() {
+    this.getUsersStates();
+    this.getItemsFromUser();
   },
   methods: {
+    todoCreated: function(todo) {
+      this.todoItems.push(todo);
+    },
     handleChange(value, item) {
-      item.todoStateId = this.stateItems[value].id;
-      // TODO: Update the changes made to the item. If completed, do we want to actually delete it? Or wait?
+      item.todoStateId = this.stateItems.filter(item => {return item.name === value})[0].id;
     },
     editStates() {
+      this.setEditStatesVisibility(true);
+    },
+    addTodoItem() {
+      this.setNewItemVisibility(true);
+    },
+    editTodoItem(item) {
+      console.log(item);
+      this.itemToEdit = item;
 
     },
-    addItem() {
-      this.addItemDialog = false;
-      this.todoItems.push(this.newItem);
-      // TODO: Add newItem to the DB
-      this.clearNewItem();
+    updateItem(item) {
+      console.log(item);
     },
-    editItem(item) {
+    editStateItem(item) {
       // TODO: Handle the dialog for editing states.
       console.log(item);
     },
-    cancelItem() {
-      this.clearNewItem();
-      this.addItemDialog = false;
-    },
-    clearNewItem() {
-      this.newItem = {
-        id: -1,
-        description: "",
-        todoStateId: 0,
-        dateDue: "",
-        ownerUsername: "",
+    async getUsersStates() {
+      try {
+        let res = await this.$axios.get("/todo-states");
+        this.currentStates = res.data.states
+      } catch (e) {
+        console.log(e);
       }
     },
-    fillCurrentStates() {
-      this.currentStates = [];
-      this.stateItems.forEach((item) => {
-        this.currentStates[item.id] = item.name;
-      });
-      console.log(this.currentStates);
+    async getItemsFromUser() {
+      try {
+        let res = await this.$axios.get("/todos");
+        this.todoItems = res.data.todos;
+      } catch(e) {
+        console.log(e);
+      }
     }
   }
 }
