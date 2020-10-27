@@ -18,7 +18,7 @@
             <v-row>
               <v-text-field label="Description"
                             placeholder="What do you want to do?"
-                            @change="newTodo.description = $event"/>
+                            v-model="newTodo.description"/>
               <v-select :items="stateOptions"
                         label="State"
                         item-text="name"
@@ -70,13 +70,15 @@ export default {
     toggleShow() {
       this.shown = true
     },
-    async createTodo() {
+    createTodo: async function () {
       try {
         const res = await this.$axios.post('/todos', this.newTodo);
         this.shown = false; // Dismiss dialog.
+
+        const todo = res.data;
+        this.newTodo.id = todo.id;
+        this.$emit('todoCreated', this.newTodo); // Pass created _todo to parent.
         this.resetNewTodo();
-        const todo = res.data; // Parse response.
-        this.$emit('todoCreated', todo) // Pass created _todo to parent.
       } catch (e) {
         console.log(e);
         alert("Sorry there was an error saving your new todo.")
