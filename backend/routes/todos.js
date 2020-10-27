@@ -62,11 +62,9 @@ router.put('/', authMW, async (req, res) => {
     try {
         await dbs.beginSQLTransaction();
 
-        let result = await todos.updateTodoItem(req.id, req.description, req.todoStateId, req.dateDue);
+        await todos.updateTodoItem(req.body.id, req.body.description, req.body.state.id, req.body.dateDue);
         commit = true;
-        return res.send({
-            message: result
-        })
+        return res.sendStatus(200);
     } catch (e) {
         console.log(e);
         return res.sendStatus(500)
@@ -95,4 +93,4 @@ router.delete('/', authMW, async (req, res) => {
 
 module.exports = {
     routes: router
-}
+};
