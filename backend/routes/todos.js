@@ -73,16 +73,14 @@ router.put('/', authMW, async (req, res) => {
     }
 });
 
-router.delete('/', authMW, async (req, res) => {
+router.delete('/:id', authMW, async (req, res) => {
     let commit = false;
     try {
         await dbs.beginSQLTransaction();
 
-        let result = await todos.deleteTodoItem(req.id);
+        await todos.deleteTodoItem(req.params.id);
         commit = true;
-        return res.send({
-            message: result
-        })
+        return res.sendStatus(200);
     } catch (e) {
         console.log(e);
         return res.sendStatus(500)
