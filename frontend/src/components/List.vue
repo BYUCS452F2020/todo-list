@@ -1,22 +1,11 @@
 <template>
   <div style="padding: 40px">
-    <div>
-      <!--TODO: refactor this dialog into its own component-->
-<!--      <v-btn style="margin: 10px"-->
-<!--             depressed-->
-<!--             color="primary"-->
-<!--             @click="editStates"-->
-<!--      >Edit States</v-btn>-->
-      <!--<EditStatesDialog
-          :edit-states-dialog-visible="editStatesDialogVisible"
-          :state-items="currentStates"
-          :set-dialog-visibility="setEditStatesVisibility"
-      />-->
-
-    </div>
     <v-row>
       <span class="display-1">Todos</span>
       <v-spacer/>
+      <EditStatesDialog :stateOptions="usersTodoStates"
+                        @stateUpdated="todoStateUpdated"
+      />
       <NewItemDialog :stateOptions="usersTodoStates"
                      @todoCreated="todoCreated"/>
     </v-row>
@@ -49,11 +38,12 @@
 <script>
 import NewItemDialog from "@/components/NewItemDialog";
 import EditItemDialog from "./EditItemDialog";
+import EditStatesDialog from "./EditStatesDialog";
 import moment from 'moment';
 
 export default {
   name: "List",
-  components: {EditItemDialog, NewItemDialog},
+  components: {EditItemDialog, NewItemDialog, EditStatesDialog},
   data: () => ({
     usersTodoStates: [],
     todoItems: [],
@@ -73,6 +63,10 @@ export default {
         }
         return el
       })
+    },
+    todoStateUpdated(state) {
+      //TODO: implement this!!!
+      console.log(state);
     },
     async getUsersStates() {
       try {
