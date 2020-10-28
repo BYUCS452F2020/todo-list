@@ -27,6 +27,7 @@
           <th>Description</th>
           <th>Due Date</th>
           <th>Edit</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -40,6 +41,10 @@
                           :state-options="usersTodoStates"
                           @itemUpdated="todoUpdated"/>
         </td>
+        <td>
+          <DeleteTodo :todo-id="todo.id"
+                      @todoDeleted="todoDeleted"/>
+        </td>
       </tr>
       </tbody>
     </v-simple-table>
@@ -50,10 +55,11 @@
 import NewItemDialog from "@/components/NewItemDialog";
 import EditItemDialog from "./EditItemDialog";
 import moment from 'moment';
+import DeleteTodo from "./DeleteTodo";
 
 export default {
   name: "List",
-  components: {EditItemDialog, NewItemDialog},
+  components: {DeleteTodo, EditItemDialog, NewItemDialog},
   data: () => ({
     usersTodoStates: [],
     todoItems: [],
@@ -67,12 +73,15 @@ export default {
       this.todoItems.unshift(todo);
     },
     todoUpdated(todo){
-      this.todoItems = this.todoItems.map(el => {
+      this.todoItems = this.todoItems.filter(el => {
         if (el.id === todo.id) {
           return todo
         }
         return el
       })
+    },
+    todoDeleted: function(todoId) {
+      this.todoItems = this.todoItems.filter(el => { return el.id !== todoId })
     },
     async getUsersStates() {
       try {
