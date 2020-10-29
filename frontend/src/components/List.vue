@@ -1,22 +1,13 @@
 <template>
   <div style="padding: 40px">
-    <div>
-      <!--TODO: refactor this dialog into its own component-->
-<!--      <v-btn style="margin: 10px"-->
-<!--             depressed-->
-<!--             color="primary"-->
-<!--             @click="editStates"-->
-<!--      >Edit States</v-btn>-->
-      <!--<EditStatesDialog
-          :edit-states-dialog-visible="editStatesDialogVisible"
-          :state-items="currentStates"
-          :set-dialog-visibility="setEditStatesVisibility"
-      />-->
-
-    </div>
     <v-row>
       <span class="display-1">Todos</span>
       <v-spacer/>
+      <EditStatesDialog :state-options="usersTodoStates"
+                        :todo-list="todoItems"
+                        @stateCreated="todoStateCreated"
+                        @stateDeleted="todoStateDeleted"
+      />
       <NewItemDialog :stateOptions="usersTodoStates"
                      @todoCreated="todoCreated"/>
     </v-row>
@@ -54,12 +45,13 @@
 <script>
 import NewItemDialog from "@/components/NewItemDialog";
 import EditItemDialog from "./EditItemDialog";
+import EditStatesDialog from "./EditStatesDialog";
 import moment from 'moment';
 import DeleteTodo from "./DeleteTodo";
 
 export default {
   name: "List",
-  components: {DeleteTodo, EditItemDialog, NewItemDialog},
+  components: {DeleteTodo, EditItemDialog, NewItemDialog, EditStatesDialog},
   data: () => ({
     usersTodoStates: [],
     todoItems: [],
@@ -82,6 +74,12 @@ export default {
     },
     todoDeleted: function(todoId) {
       this.todoItems = this.todoItems.filter(el => { return el.id !== todoId })
+    },
+    todoStateCreated(state) {
+      this.usersTodoStates.push(state);
+    },
+    todoStateDeleted(stateId) {
+      this.usersTodoStates = this.usersTodoStates.filter(el => {return el.id !== stateId});
     },
     async getUsersStates() {
       try {

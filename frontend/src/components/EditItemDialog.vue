@@ -22,6 +22,7 @@
                         :value="item.state.name"
                         style="max-width: 150px"
                         class="pl-3"
+                        @change="onStateChange"
               />
             </v-row>
             <v-row justify="center">
@@ -63,13 +64,14 @@ export default {
     }
   }),
   methods: {
+    onStateChange(selected) {
+      this.item.state = selected;
+    },
     async updateItem() {
-
       try {
         await this.$axios.put('/todos', this.item);
         this.toggleShown();
         this.$emit('itemUpdated', this.updatedItem);
-        alert('The todo was successfully updated!')
       } catch (e) {
         console.log(e);
         alert("There was an error attempting to save the updated todo. Please try again later.")

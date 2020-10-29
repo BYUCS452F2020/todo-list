@@ -74,7 +74,6 @@ export default {
       try {
         const res = await this.$axios.post('/todos', this.newTodo);
         this.shown = false; // Dismiss dialog.
-
         const todo = res.data;
         this.newTodo.id = todo.id;
         this.$emit('todoCreated', this.newTodo); // Pass created _todo to parent.
