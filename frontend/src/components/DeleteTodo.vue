@@ -1,5 +1,5 @@
 <template>
-  <v-btn color="red"
+  <v-btn color="error"
          @click="deleteTodo">
     Delete
   </v-btn>

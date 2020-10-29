@@ -11,7 +11,7 @@
     <v-dialog v-model="shown" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          Edit your states
+          Edit Your States
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -19,7 +19,7 @@
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Action</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -31,7 +31,7 @@
                           color="error"
                           @click="deleteState(state)"
                           small>
-                        Delete <v-icon>mdi-delete</v-icon>
+                        Delete
                       </v-btn>
                     </td>
                     <td v-else></td>
@@ -48,7 +48,7 @@
                   style="margin-right: 10px;"
               />
               <v-btn depressed color="primary" @click="addState" medium>
-                Add <v-icon dense>mdi-plus</v-icon>
+                Add
               </v-btn>
               <v-spacer/>
             </v-row>
@@ -67,7 +67,7 @@
 <script>
 export default {
   name: "EditStatesDialog",
-  props: ['stateOptions'],
+  props: ['stateOptions', 'todoList'],
   data: () => ({
     shown: false,
     newStateName: "",
@@ -77,15 +77,38 @@ export default {
       this.shown = !this.shown;
     },
     async addState() {
-      console.log(this.newStateName);
+      try {
+        const res = await this.$axios.post('/todo-states', {name: this.newStateName});
+        const newState = res.data;
+        this.$emit('stateCreated', newState);
+      } catch(e) {
+        console.log(e);
+        alert("Sorry, there was an error adding your new state.");
+      }
       this.newStateName = "";
     },
     async deleteState(state) {
-      console.log(state);
+      if(this.verifyDeletePossible(state)) {
+        try {
+          await this.$axios.delete(`/todo-states/${state.id}`);
+          this.$emit('stateDeleted', state.id);
+        } catch(e) {
+          console.log(e);
+          alert("Sorry there was an error deleting your state.");
+        }
+      } else {
+        alert("You must make sure you don't have any todo items that are currently " +
+              "in this state before you can delete it.");
+      }
     },
-    cancel() {
-      this.toggleShown();
-    },
+    verifyDeletePossible(state) {
+      for(let i = 0; i < this.todoList.length; i++) {
+        if(this.todoList[i].state.id == state.id) {
+          return false;
+        }
+      }
+      return true;
+    }
   }
 }
 </script>

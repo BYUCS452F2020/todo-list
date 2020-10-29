@@ -3,8 +3,10 @@
     <v-row>
       <span class="display-1">Todos</span>
       <v-spacer/>
-      <EditStatesDialog :stateOptions="usersTodoStates"
-                        @stateUpdated="todoStateUpdated"
+      <EditStatesDialog :state-options="usersTodoStates"
+                        :todo-list="todoItems"
+                        @stateCreated="todoStateCreated"
+                        @stateDeleted="todoStateDeleted"
       />
       <NewItemDialog :stateOptions="usersTodoStates"
                      @todoCreated="todoCreated"/>
@@ -73,9 +75,11 @@ export default {
     todoDeleted: function(todoId) {
       this.todoItems = this.todoItems.filter(el => { return el.id !== todoId })
     },
-    todoStateUpdated(state) {
-      //TODO: implement this!!!
-      console.log(state);
+    todoStateCreated(state) {
+      this.usersTodoStates.push(state);
+    },
+    todoStateDeleted(stateId) {
+      this.usersTodoStates = this.usersTodoStates.filter(el => {return el.id !== stateId});
     },
     async getUsersStates() {
       try {
