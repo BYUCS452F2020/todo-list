@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const todoStates = require("../data/todoStates");
+const todos = require("../data/todos");
 const dbs = require("../dbs");
 const authMW = require("../middleware").authMW;
 
@@ -9,11 +10,9 @@ router.post('/', authMW, async (req, res) => {
     try {
         await dbs.beginSQLTransaction();
 
-        let result = await todoStates.createTodoState(req.name, req.ownerUsername);
+        let result = await todoStates.createTodoState(req.body.name, req.user.username);
         commit = true;
-        return res.send({
-            message: result
-        })
+        return res.send(result);
     } catch (e) {
         console.log(e);
         return res.sendStatus(500)
@@ -45,7 +44,7 @@ router.get('/by-id', authMW, async (req, res) => {
     try {
         await dbs.beginSQLTransaction();
 
-        let result = await todoStates.readTodoStateById(req.id);
+        let result = await todoStates.readTodoStateById(req.body.id);
         commit = true;
         return res.send({
             message: result
@@ -58,16 +57,23 @@ router.get('/by-id', authMW, async (req, res) => {
     }
 });
 
-router.delete('/', authMW, async (req, res) => {
+router.delete('/:id', authMW, async (req, res) => {
+    if(req.params.id == 1 || req.params.id == 2) return res.sendStatus(401);
     let commit = false;
     try {
         await dbs.beginSQLTransaction();
+        let result = await todos.readTodoItems(req.user.username);
+        let canDelete = true;
+        for(let i = 0; i < result.length; i++) {
+            if(result[i].state.id == req.params.id) {
+                canDelete = false;
+            }
+        }
+        if(!canDelete) return res.sendStatus(401);
 
-        let result = await todoStates.deleteTodoState(req.id);
+        await todoStates.deleteTodoState(req.params.id);
         commit = true;
-        return res.send({
-            message: result
-        })
+        return res.sendStatus(200);
     } catch (e) {
         console.log(e);
         return res.sendStatus(500)

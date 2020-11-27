@@ -1,22 +1,13 @@
 <template>
   <div style="padding: 40px">
-    <div>
-      <!--TODO: refactor this dialog into its own component-->
-<!--      <v-btn style="margin: 10px"-->
-<!--             depressed-->
-<!--             color="primary"-->
-<!--             @click="editStates"-->
-<!--      >Edit States</v-btn>-->
-      <!--<EditStatesDialog
-          :edit-states-dialog-visible="editStatesDialogVisible"
-          :state-items="currentStates"
-          :set-dialog-visibility="setEditStatesVisibility"
-      />-->
-
-    </div>
     <v-row>
       <span class="display-1">Todos</span>
       <v-spacer/>
+      <EditStatesDialog :state-options="usersTodoStates"
+                        :todo-list="todoItems"
+                        @stateCreated="todoStateCreated"
+                        @stateDeleted="todoStateDeleted"
+      />
       <NewItemDialog :stateOptions="usersTodoStates"
                      @todoCreated="todoCreated"/>
     </v-row>
@@ -27,6 +18,7 @@
           <th>Description</th>
           <th>Due Date</th>
           <th>Edit</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -40,6 +32,10 @@
                           :state-options="usersTodoStates"
                           @itemUpdated="todoUpdated"/>
         </td>
+        <td>
+          <DeleteTodo :todo-id="todo.id"
+                      @todoDeleted="todoDeleted"/>
+        </td>
       </tr>
       </tbody>
     </v-simple-table>
@@ -49,11 +45,13 @@
 <script>
 import NewItemDialog from "@/components/NewItemDialog";
 import EditItemDialog from "./EditItemDialog";
+import EditStatesDialog from "./EditStatesDialog";
 import moment from 'moment';
+import DeleteTodo from "./DeleteTodo";
 
 export default {
   name: "List",
-  components: {EditItemDialog, NewItemDialog},
+  components: {DeleteTodo, EditItemDialog, NewItemDialog, EditStatesDialog},
   data: () => ({
     usersTodoStates: [],
     todoItems: [],
@@ -67,12 +65,21 @@ export default {
       this.todoItems.unshift(todo);
     },
     todoUpdated(todo){
-      this.todoItems = this.todoItems.map(el => {
+      this.todoItems = this.todoItems.filter(el => {
         if (el.id === todo.id) {
           return todo
         }
         return el
       })
+    },
+    todoDeleted: function(todoId) {
+      this.todoItems = this.todoItems.filter(el => { return el.id !== todoId })
+    },
+    todoStateCreated(state) {
+      this.usersTodoStates.push(state);
+    },
+    todoStateDeleted(stateId) {
+      this.usersTodoStates = this.usersTodoStates.filter(el => {return el.id !== stateId});
     },
     async getUsersStates() {
       try {
