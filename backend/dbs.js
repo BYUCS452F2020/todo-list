@@ -5,7 +5,7 @@ const sqlClient = new Client({
   connectionString: "postgres://postgres:postgres@localhost:5432/todo"
 });
 
-mongoose.connect(`mongodb://localhost:27017/todo`, { useNewUrlParser: true, useUnifiedTopology: true });
+mongooseClient.connect(`mongodb://localhost:27017/todo`, { useNewUrlParser: true, useUnifiedTopology: true });
 
 sqlClient.connect();
 

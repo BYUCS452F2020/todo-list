@@ -1,7 +1,7 @@
-const { sqlClient } = require('../dbs.js');
 const argon2 = require('argon2');
+const { mongooseClient } = require('../dbs');
 
-const userSchema = new mongoose.Schema({
+const userSchema = new mongooseClient.Schema({
   username: String,
   password: String,
 });
@@ -41,11 +41,7 @@ userSchema.methods.toJSON = function () {
   return obj
 };
 
-const User = mongoose.model('User', userSchema);
-
-// async function hashPassword(password) {
-//     return argon2.hash(password);
-// }
+const User = mongooseClient.model('User', userSchema);
 
 async function createUser(username, password) {
   let user = new User({
