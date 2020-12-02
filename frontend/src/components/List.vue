@@ -33,7 +33,7 @@
                           @itemUpdated="todoUpdated"/>
         </td>
         <td>
-          <DeleteTodo :todo-id="todo.id"
+          <DeleteTodo :todo-id="todo._id"
                       @todoDeleted="todoDeleted"/>
         </td>
       </tr>
@@ -61,25 +61,30 @@ export default {
     this.getItemsFromUser();
   },
   methods: {
-    todoCreated: function(todo) {
-      this.todoItems.unshift(todo);
+    todoCreated: function() {
+      //this.todoItems.unshift(todo);
+      this.getItemsFromUser();
     },
-    todoUpdated(todo){
-      this.todoItems = this.todoItems.filter(el => {
-        if (el.id === todo.id) {
-          return todo
-        }
-        return el
-      })
+    todoUpdated(){
+      // this.todoItems = this.todoItems.filter(el => {
+      //   if (el._id === todo._id) {
+      //     return todo
+      //   }
+      //   return el
+      // });
+      this.getItemsFromUser();
     },
-    todoDeleted: function(todoId) {
-      this.todoItems = this.todoItems.filter(el => { return el.id !== todoId })
+    todoDeleted: function() {
+      //this.todoItems = this.todoItems.filter(el => { return el._id !== todoId });
+      this.getItemsFromUser();
     },
-    todoStateCreated(state) {
-      this.usersTodoStates.push(state);
+    todoStateCreated() {
+      //this.usersTodoStates.push(state);
+      this.getUsersStates();
     },
-    todoStateDeleted(stateId) {
-      this.usersTodoStates = this.usersTodoStates.filter(el => {return el.id !== stateId});
+    todoStateDeleted() {
+      //this.usersTodoStates = this.usersTodoStates.filter(el => {return el._id !== stateId});
+      this.getUsersStates();
     },
     async getUsersStates() {
       try {
@@ -98,7 +103,7 @@ export default {
       }
     },
     formatDate(date) {
-      return moment(date).format('MM DD, YYYY')
+      return moment(date).format('MM - DD - YYYY')
     }
   }
 }

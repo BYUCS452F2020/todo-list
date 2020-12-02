@@ -13,7 +13,7 @@
       async deleteTodo() {
         try {
           await this.$axios.delete(`/todos/${this.todoId}`);
-          this.$emit("todoDeleted", this.todoId);
+          this.$emit("todoDeleted");
         } catch (e) {
           alert("Failed to delete your todo. Please try again later.");
         }

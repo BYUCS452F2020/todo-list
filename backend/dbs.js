@@ -7,7 +7,7 @@ const sqlClient = new Client({
 
 mongooseClient.connect(`mongodb://localhost:27017/todo`, { useNewUrlParser: true, useUnifiedTopology: true });
 
-sqlClient.connect();
+//sqlClient.connect();
 
 async function closeSQLConnection(commit) {
   if (commit) {

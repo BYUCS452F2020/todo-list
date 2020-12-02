@@ -61,22 +61,20 @@ export default {
       description: "",
       dateDue: "",
       state: {
-        id: -1,
+        _id: -1,
         name: ""
       },
     },
   }),
   methods: {
     toggleShow() {
-      this.shown = true
+      this.shown = true;
     },
     createTodo: async function () {
       try {
-        const res = await this.$axios.post('/todos', this.newTodo);
+        await this.$axios.post('/todos');
         this.shown = false; // Dismiss dialog.
-        const todo = res.data;
-        this.newTodo.id = todo.id;
-        this.$emit('todoCreated', this.newTodo); // Pass created _todo to parent.
+        this.$emit('todoCreated'); // Pass created _todo to parent.
         this.resetNewTodo();
       } catch (e) {
         console.log(e);

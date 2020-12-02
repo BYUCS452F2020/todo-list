@@ -17,7 +17,7 @@ async function createTodoState(name, ownerUsername) {
 }
 
 async function readTodoStates(ownerUsername) {
-  return TodoState.find({ownerUsername});
+  return TodoState.find({ownerUsername: {$in: [ownerUsername, null]}});
 }
 
 async function readTodoStateById(id) {
@@ -25,7 +25,9 @@ async function readTodoStateById(id) {
 }
 
 async function deleteTodoState(id) {
-  TodoState.deleteOne({ _id: id });
+  TodoState.deleteOne({ _id: id }).catch((e) => {
+    console.log(e);
+  });
 }
 
 module.exports = {
