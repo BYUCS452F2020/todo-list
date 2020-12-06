@@ -7,8 +7,6 @@ const authMW = require("../middleware").authMW;
 router.post('/', authMW, async (req, res) => {
     
     try {
-        
-
         let result = await todos.createTodoItem(req.body.description, req.body.state._id, req.body.dateDue,
           req.user.username);
         

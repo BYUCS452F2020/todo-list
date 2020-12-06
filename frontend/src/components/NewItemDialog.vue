@@ -72,7 +72,7 @@ export default {
     },
     createTodo: async function () {
       try {
-        await this.$axios.post('/todos');
+        await this.$axios.post('/todos', this.newTodo);
         this.shown = false; // Dismiss dialog.
         this.$emit('todoCreated'); // Pass created _todo to parent.
         this.resetNewTodo();
