@@ -1,32 +1,33 @@
-const { sqlClient } = require('../dbs.js');
+const { mongooseClient } = require("../dbs");
+
+const todoStateSchema = {
+  name: String,
+  ownerUsername: String
+};
+
+const TodoState = mongooseClient.model('TodoState', todoStateSchema);
 
 async function createTodoState(name, ownerUsername) {
-  const sql = `INSERT INTO todo_states 
-                (name, owner_username)
-                VALUES ($1, $2) RETURNING *`;
-  const { rows } = await sqlClient.query(sql, [name, ownerUsername]);
-  return rows[0];
+  let todoState = new TodoState({
+    name,
+    ownerUsername
+  });
+
+  return await todoState.save();
 }
 
 async function readTodoStates(ownerUsername) {
-  const sql = `SELECT * FROM todo_states
-                    WHERE owner_username = $1
-                        OR owner_username IS NULL`;
-  const { rows } = await sqlClient.query(sql, [ownerUsername]);
-  return rows
+  return TodoState.find({ownerUsername: {$in: [ownerUsername, null]}});
 }
 
 async function readTodoStateById(id) {
-  const sql = `SELECT * FROM todos
-                    WHERE id = $1`;
-  const { rows } = await sqlClient.query(sql, [id]);
-  return rows;
+  return TodoState.findOne({ _id: id });
 }
 
 async function deleteTodoState(id) {
-  const sql = `DELETE FROM todo_states
-                WHERE id = $1`;
-  await sqlClient.query(sql, [id]);
+  TodoState.deleteOne({ _id: id }).catch((e) => {
+    console.log(e);
+  });
 }
 
 module.exports = {

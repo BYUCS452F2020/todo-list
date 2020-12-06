@@ -1,9 +1,13 @@
 const { Client } = require('pg');
+const mongooseClient = require('mongoose');
+
 const sqlClient = new Client({
   connectionString: "postgres://postgres:postgres@localhost:5432/todo"
 });
 
-sqlClient.connect();
+mongooseClient.connect(`mongodb://localhost:27017/todo`, { useNewUrlParser: true, useUnifiedTopology: true });
+
+//sqlClient.connect();
 
 async function closeSQLConnection(commit) {
   if (commit) {
@@ -20,6 +24,7 @@ async function beginSQLTransaction() {
 module.exports = {
   sqlClient,
   beginSQLTransaction,
-  closeSQLConnection
+  closeSQLConnection,
+  mongooseClient
 };
 

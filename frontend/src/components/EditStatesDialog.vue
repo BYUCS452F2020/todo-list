@@ -26,7 +26,7 @@
                 <tr v-for="(state, index) in stateOptions"
                     :key="index">
                     <td>{{state.name}}</td>
-                    <td v-if="state.owner_username !== null">
+                    <td v-if="state.ownerUsername !== null">
                       <v-btn
                           color="error"
                           @click="deleteState(state)"
@@ -78,9 +78,8 @@ export default {
     },
     async addState() {
       try {
-        const res = await this.$axios.post('/todo-states', {name: this.newStateName});
-        const newState = res.data;
-        this.$emit('stateCreated', newState);
+        await this.$axios.post('/todo-states', {name: this.newStateName});
+        this.$emit('stateCreated');
       } catch(e) {
         console.log(e);
         alert("Sorry, there was an error adding your new state.");
@@ -90,8 +89,8 @@ export default {
     async deleteState(state) {
       if(this.verifyDeletePossible(state)) {
         try {
-          await this.$axios.delete(`/todo-states/${state.id}`);
-          this.$emit('stateDeleted', state.id);
+          await this.$axios.delete(`/todo-states/${state._id}`);
+          this.$emit('stateDeleted');
         } catch(e) {
           console.log(e);
           alert("Sorry there was an error deleting your state.");
@@ -103,7 +102,7 @@ export default {
     },
     verifyDeletePossible(state) {
       for(let i = 0; i < this.todoList.length; i++) {
-        if(this.todoList[i].state.id == state.id) {
+        if(this.todoList[i].state._id == state._id) {
           return false;
         }
       }

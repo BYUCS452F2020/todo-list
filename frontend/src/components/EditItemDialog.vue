@@ -56,7 +56,7 @@ export default {
   data: () => ({
     shown: false,
     updatedItem: {
-      id: "",
+      _id: "",
       description: "",
       todoStateId: "",
       dateDue: "",
@@ -71,7 +71,7 @@ export default {
       try {
         await this.$axios.put('/todos', this.item);
         this.toggleShown();
-        this.$emit('itemUpdated', this.updatedItem);
+        this.$emit('itemUpdated');
       } catch (e) {
         console.log(e);
         alert("There was an error attempting to save the updated todo. Please try again later.")

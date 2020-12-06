@@ -13,9 +13,7 @@ router.post('/', async (req, res) => {
       });
   }
 
-  let commit = false;
   try {
-    await dbs.beginSQLTransaction();
 
     let user = await users.readUser(req.body.username);
     if (user) {
@@ -28,7 +26,7 @@ router.post('/', async (req, res) => {
     // This puts the username in the session token.
     req.session.username = user.username;
 
-    commit = true;
+    //commit = true;
 
     delete user.password;
     return res.send({
@@ -37,8 +35,6 @@ router.post('/', async (req, res) => {
   } catch (e) {
     console.log(e);
     return res.sendStatus(500);
-  } finally {
-    await dbs.closeSQLConnection(commit)
   }
 });
 
